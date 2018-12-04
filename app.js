@@ -9,10 +9,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Omniauth / Oauth
-passport.deserializeUser(new GoogleStrategy({
-  clientID: 422666713926-k0dqju2prf72rjd5rb872gpf6utt6ahp.apps.googleusercontent.com,
-  clientSecret: FWbuWQCpKkDJt3pslW3tAEjj,
-  callbackUrl: http://localhost:8080/auth/google/callback,
+passport.use(new GoogleStrategy({
+  clientID: "422666713926-k0dqju2prf72rjd5rb872gpf6utt6ahp.apps.googleusercontent.com",
+  clientSecret: "FWbuWQCpKkDJt3pslW3tAEjj",
+  callbackUrl: "http://localhost:8080/auth/google/callback",
 },function(accessToken, refreshToken, profile, cb){
   var user = {
     accessToken: accessToken,
@@ -20,7 +20,7 @@ passport.deserializeUser(new GoogleStrategy({
     profile: profile
   };
 
-  return cb(null, user)
+  return cb(null, user);
 }));
 
 passport.serializeUser(function(user, done){
@@ -38,8 +38,12 @@ app.get("/", function(req, res){
 });
 
 app.post("/login", passport.authenticate('google', {
-  // Iniciar sesion con Google
-  scope: [],
+  // Iniciar sesion con Google permisos de la cuenta de google
+  scope: [
+    'profile',
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/userinfo.email',
+  ],
 }));
 
 app.listen(8080);
